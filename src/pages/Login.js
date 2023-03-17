@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import getToken from '../services/triviaAPI';
 
 class Login extends Component {
   state = {
@@ -17,14 +19,16 @@ class Login extends Component {
     }
   };
 
+  startGame = async () => {
+    const { history } = this.props;
+    await getToken();
+    history.push('/game');
+  };
+
   render() {
     const { btnDisabled, name, email } = this.state;
     return (
       <>
-        {/* <header className="App-header">
-          <img src={ logo } className="App-logo" alt="logo" />
-          <p>SUA VEZ</p>
-        </header> */}
         <input
           data-testid="input-player-name"
           type="text"
@@ -42,7 +46,7 @@ class Login extends Component {
         <button
           data-testid="btn-play"
           disabled={ btnDisabled }
-          // onClick={ this.handleChange }
+          onClick={ this.startGame }
         >
           {' '}
           Play
@@ -51,5 +55,11 @@ class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
+};
 
 export default Login;
