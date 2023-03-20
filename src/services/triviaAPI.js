@@ -5,4 +5,11 @@ const getToken = async () => {
   return response;
 };
 
+export const getQuestions = async () => {
+  const tokenTrivia = localStorage.getItem('token');
+  const trivaQuestions = await fetch(`https://opentdb.com/api.php?amount=5&token=${tokenTrivia}`);
+  const response = await trivaQuestions.json();
+  return response;
+};
+
 export default getToken;
