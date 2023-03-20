@@ -37,7 +37,7 @@ describe('Testando a Tela de Login', () => {
         const { pathname } = history.location;
         expect(pathname).toBe('/config');
     });
-    it('Testa se ao clicar no Botão Play, a aplicação redireciona para a página do jogo', async () => {
+    it('Testa se ao clicar no Botão Play, a aplicação redireciona para a página do jogo', () => {
         const { history } = renderWithRouterAndRedux(<App />);
 
         const name = screen.getByTestId('input-player-name');
