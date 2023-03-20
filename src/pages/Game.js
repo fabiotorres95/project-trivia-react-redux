@@ -7,6 +7,7 @@ class Game extends Component {
   state = {
     questions: '',
     changeColor: false, // estado que muda a cor do botão
+    buttonNext: false,
   };
 
   componentDidMount() {
@@ -29,11 +30,16 @@ class Game extends Component {
   handleClickColor = () => { // função que muda o estado da cor do botão de acordo com a resposta
     this.setState((prevState) => ({
       changeColor: !prevState.changeColor, // altera o estado para true ou false, dependendo do estado anterior
+      buttonNext: true,
     }));
   };
 
+  // Função que leva para a próxima pergunta:
+  nextQuestion = () => {
+  };
+
   render() {
-    const { questions, changeColor } = this.state;
+    const { questions, changeColor, buttonNext } = this.state;
     if (!questions) return <p>Loading...</p>;
     const answersList = [...questions[0].incorrect_answers, questions[0].correct_answer];
     const randomAnswersLits = answersList.sort(() => 1 / 2 - Math.random());
@@ -73,6 +79,16 @@ class Game extends Component {
             );
           }) }
         </div>
+        {
+          buttonNext && (
+            <button
+              data-testid="btn-next"
+              onClick={ this.nextQuestion }
+            >
+              Next
+            </button>
+          )
+        }
       </div>
     );
   }
