@@ -6,6 +6,7 @@ import { getQuestions } from '../services/triviaAPI';
 class Game extends Component {
   state = {
     questions: '',
+    changeColor: false, // estado que muda a cor do botão
   };
 
   componentDidMount() {
@@ -25,8 +26,14 @@ class Game extends Component {
     }
   };
 
+  handleClickColor = () => { // função que muda o estado da cor do botão de acordo com a resposta
+    this.setState((prevState) => ({
+      changeColor: !prevState.changeColor, // altera o estado para true ou false, dependendo do estado anterior
+    }));
+  };
+
   render() {
-    const { questions } = this.state;
+    const { questions, changeColor } = this.state;
     if (!questions) return <p>Loading...</p>;
     const answersList = [...questions[0].incorrect_answers, questions[0].correct_answer];
     const randomAnswersLits = answersList.sort(() => 1 / 2 - Math.random());
@@ -47,8 +54,19 @@ class Game extends Component {
             return (
               <button
                 key={ answers }
+                type="button"
+                onClick={ this.handleClickColor }
                 data-testid={ isCorrectAnswer
                   ? 'correct-answer' : `wrong-answer-${index}` }
+                style={ // muda a cor do botão de acordo com a resposta
+                  changeColor // estado que muda a cor do botão
+                    ? {
+                      border: `3px solid ${
+                        isCorrectAnswer ? 'rgb(6, 240, 15)' : 'red' // se a resposta for correta, a cor do botão será verde, se não, vermelho
+                      }`,
+                    }
+                    : null // se o estado for false, a cor do botão será a padrão
+                }
               >
                 {answers}
               </button>
