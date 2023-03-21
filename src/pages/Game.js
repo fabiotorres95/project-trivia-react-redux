@@ -1,7 +1,9 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import Header from '../components/Header';
 import { getQuestions } from '../services/triviaAPI';
+import { requestNextQuestion, requestCorrectAnswer } from '../redux/actions';
 
 class Game extends Component {
   state = {
@@ -11,6 +13,7 @@ class Game extends Component {
     timer: 30,
     isDisabled: false,
     randomAnswers: [],
+    indexQuestion: 0,
   };
 
   componentDidMount() {
@@ -33,7 +36,27 @@ class Game extends Component {
     }
   };
 
-  handleClickColor = () => { // função que muda o estado da cor do botão de acordo com a resposta
+  handleClickColor = (question) => { // função que muda o estado da cor do botão de acordo com a resposta
+    const { dispatch } = this.props;
+    const { questions } = this.state;
+    const three = 3;
+    const two = 2;
+    const one = 1;
+    clearInterval(this.timerInterval);
+    console.log(this.timerInterval);
+    if (question) {
+      const difficulty = () => {
+        if (questions[0].difficulty === 'hard') {
+          return three;
+        }
+        if (questions[0].difficulty === 'medium') {
+          return two;
+        }
+        return one;
+      };
+      dispatch(requestNextQuestion(this.timerInterval, difficulty()));
+      dispatch(requestCorrectAnswer());
+    }
     this.setState((prevState) => ({
       changeColor: !prevState.changeColor, // altera o estado para true ou false, dependendo do estado anterior
       buttonNext: true,
@@ -42,14 +65,28 @@ class Game extends Component {
 
   // Função que leva para a próxima pergunta:
   nextQuestion = () => {
+    const { history } = this.props;
+    const { indexQuestion } = this.state;
+    const four = 4;
+    this.timerQuestions();
+    if (indexQuestion < four) {
+      this.setState({
+        indexQuestion: indexQuestion + 1,
+        timer: 30,
+      });
+      this.getTriviaQuestions();
+    }
+    if (indexQuestion === four) {
+      history.push('/feedback');
+    }
   };
 
   timerQuestions = () => {
     const timerNumber = 1000;
-    const timerInterval = setInterval(() => {
+    this.timerInterval = setInterval(() => {
       const { timer } = this.state;
       if (timer === 0) {
-        clearInterval(timerInterval);
+        clearInterval(this.timerInterval);
         this.setState({
           isDisabled: true,
         });
@@ -88,7 +125,7 @@ class Game extends Component {
               <button
                 key={ answers }
                 type="button"
-                onClick={ this.handleClickColor }
+                onClick={ () => this.handleClickColor(isCorrectAnswer) }
                 data-testid={ isCorrectAnswer
                   ? 'correct-answer' : `wrong-answer-${index}` }
                 style={ // muda a cor do botão de acordo com a resposta
@@ -127,6 +164,14 @@ Game.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default Game;
+function mapStateToProps(state) {
+  return {
+    player: state.player,
+    assertions: state.player.assertions,
+  };
+}
+
+export default connect(mapStateToProps)(Game);

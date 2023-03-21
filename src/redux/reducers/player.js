@@ -1,4 +1,4 @@
-import { USER_PLAYER } from '../actions';
+import { USER_PLAYER, NEXT_QUESTION, CORRECT_ANSWER } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
@@ -14,6 +14,18 @@ const player = (state = INITIAL_STATE, action) => {
       ...state,
       name: action.name,
       gravatarEmail: action.email,
+    };
+  }
+  case NEXT_QUESTION: {
+    return {
+      ...state,
+      score: state.score + action.score,
+    };
+  }
+  case CORRECT_ANSWER: {
+    return {
+      ...state,
+      assertions: state.assertions + 1,
     };
   }
   default: return state;
