@@ -8,22 +8,28 @@ class Game extends Component {
     questions: '',
     changeColor: false, // estado que muda a cor do botão
     buttonNext: false,
+    timer: 30,
+    isDisabled: false,
+    randomAnswers: [],
   };
 
   componentDidMount() {
     this.getTriviaQuestions();
+    this.timerQuestions();
   }
 
   getTriviaQuestions = async () => {
     const { history } = this.props;
     const ERROR_STATUS = 3;
 
-    const response = await getQuestions();
-    if (response.response_code === ERROR_STATUS) {
+    const { results, response_code: responseCode } = await getQuestions();
+    if (responseCode === ERROR_STATUS) {
       localStorage.removeItem('token');
       history.push('/');
     } else {
-      this.setState({ questions: response.results });
+      const answersList = [...results[0].incorrect_answers, results[0].correct_answer];
+      const randomAnswersLits = answersList.sort(() => 1 / 2 - Math.random());
+      this.setState({ questions: results, randomAnswers: randomAnswersLits });
     }
   };
 
@@ -38,11 +44,32 @@ class Game extends Component {
   nextQuestion = () => {
   };
 
+  timerQuestions = () => {
+    const timerNumber = 1000;
+    const timerInterval = setInterval(() => {
+      const { timer } = this.state;
+      if (timer === 0) {
+        clearInterval(timerInterval);
+        this.setState({
+          isDisabled: true,
+        });
+        return;
+      }
+      this.setState((prevState) => ({
+        timer: prevState.timer - 1,
+      }));
+    }, timerNumber);
+  };
+
   render() {
-    const { questions, changeColor, buttonNext } = this.state;
+    const {
+      questions,
+      changeColor,
+      buttonNext,
+      isDisabled,
+      randomAnswers,
+      timer } = this.state;
     if (!questions) return <p>Loading...</p>;
-    const answersList = [...questions[0].incorrect_answers, questions[0].correct_answer];
-    const randomAnswersLits = answersList.sort(() => 1 / 2 - Math.random());
     return (
       <div>
         <Header />
@@ -55,7 +82,7 @@ class Game extends Component {
         <div
           data-testid="answer-options"
         >
-          { randomAnswersLits.map((answers, index) => {
+          { randomAnswers.map((answers, index) => {
             const isCorrectAnswer = answers === questions[0].correct_answer;
             return (
               <button
@@ -73,6 +100,7 @@ class Game extends Component {
                     }
                     : null // se o estado for false, a cor do botão será a padrão
                 }
+                disabled={ isDisabled }
               >
                 {answers}
               </button>
@@ -89,6 +117,7 @@ class Game extends Component {
             </button>
           )
         }
+        <p>{ timer }</p>
       </div>
     );
   }
