@@ -42,6 +42,8 @@ class Game extends Component {
     const three = 3;
     const two = 2;
     const one = 1;
+    clearInterval(this.timerInterval);
+    console.log(this.timerInterval);
     if (question) {
       const difficulty = () => {
         if (questions[0].difficulty === 'hard') {
@@ -66,6 +68,7 @@ class Game extends Component {
     const { history } = this.props;
     const { indexQuestion } = this.state;
     const four = 4;
+    this.timerQuestions();
     if (indexQuestion < four) {
       this.setState({
         indexQuestion: indexQuestion + 1,
