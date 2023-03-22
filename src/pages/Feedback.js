@@ -5,7 +5,6 @@ import Header from '../components/Header';
 
 class Feedback extends Component {
   render() {
-
     const { assertions, score, history } = this.props;
     const MIN_LENGTH_ANSWERS = 3;
 
@@ -61,10 +60,6 @@ class Feedback extends Component {
           onClick={ () => history.push('/') }
         >
           Home
-        </button>
-          onClick={ this.playAgain }
-        >
-          Play Again
         </button>
       </>
     );
