@@ -1,6 +1,7 @@
 export const USER_PLAYER = 'USER_PLAYER';
 export const NEXT_QUESTION = 'NEXT_QUESTION';
 export const CORRECT_ANSWER = 'CORRECT_ANSWER';
+export const PLAY_AGAIN = 'PLAY_AGAIN';
 
 export const requestUserPlayer = (name, email) => ({
   type: USER_PLAYER,
@@ -19,4 +20,8 @@ export const requestNextQuestion = (timer, difficulty) => {
 
 export const requestCorrectAnswer = () => ({
   type: CORRECT_ANSWER,
+});
+
+export const requestPlayAgain = () => ({
+  type: PLAY_AGAIN,
 });

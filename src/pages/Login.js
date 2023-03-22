@@ -57,7 +57,6 @@ class Login extends Component {
           disabled={ btnDisabled }
           onClick={ this.startGame }
         >
-          {' '}
           Play
         </button>
         <button
