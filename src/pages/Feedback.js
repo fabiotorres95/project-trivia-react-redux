@@ -5,7 +5,7 @@ import Header from '../components/Header';
 
 class Feedback extends Component {
   render() {
-    const { assertions } = this.props;
+    const { assertions, score } = this.props;
     const MIN_LENGTH_ANSWERS = 3;
 
     return (
@@ -15,20 +15,32 @@ class Feedback extends Component {
         {
           assertions >= MIN_LENGTH_ANSWERS
             ? (
-              <p
-                data-testid="feedback-text"
-                className="feedbackTextWD"
-              >
-                Well Done!
-              </p>
+              <div>
+                <h3>Placar Final: </h3>
+                <h3 data-testid="feedback-total-score">{ score }</h3>
+                <p>Respostas Corretas: </p>
+                <p data-testid="feedback-total-question">{ assertions }</p>
+                <p
+                  data-testid="feedback-text"
+                  className="feedbackTextWD"
+                >
+                  Well Done!
+                </p>
+              </div>
             )
             : (
-              <p
-                data-testid="feedback-text"
-                className="feedbackTextCB"
-              >
-                Could be better...
-              </p>
+              <div>
+                <h3>Placar Final: </h3>
+                <h3 data-testid="feedback-total-score">{ score }</h3>
+                <p>Respostas Corretas: </p>
+                <p data-testid="feedback-total-question">{ assertions }</p>
+                <p
+                  data-testid="feedback-text"
+                  className="feedbackTextCB"
+                >
+                  Could be better...
+                </p>
+              </div>
             )
         }
       </>
@@ -38,6 +50,7 @@ class Feedback extends Component {
 
 Feedback.propTypes = {
   assertions: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
 function mapStateToProps(state) {
