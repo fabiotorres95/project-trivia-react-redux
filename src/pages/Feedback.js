@@ -4,6 +4,11 @@ import PropTypes from 'prop-types';
 import Header from '../components/Header';
 
 class Feedback extends Component {
+  playAgain = () => {
+    const { history } = this.props;
+    history.push('/');
+  };
+
   render() {
     const { assertions } = this.props;
     const MIN_LENGTH_ANSWERS = 3;
@@ -31,6 +36,12 @@ class Feedback extends Component {
               </p>
             )
         }
+        <button
+          data-testid="btn-play-again"
+          onClick={ this.playAgain }
+        >
+          Play Again
+        </button>
       </>
     );
   }
@@ -38,6 +49,9 @@ class Feedback extends Component {
 
 Feedback.propTypes = {
   assertions: PropTypes.number.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
 };
 
 function mapStateToProps(state) {
