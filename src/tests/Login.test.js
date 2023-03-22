@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 import Login from '../pages/Login';
@@ -8,7 +8,7 @@ import App from '../App';
 
 describe('Testando a Tela de Login', () => {
     it('Testa se os Inputs de Nome e Email estão renderizados na tela', () => {
-        renderWithRouterAndRedux(<Login />);
+        renderWithRouterAndRedux(<App />);
       const name = screen.getByTestId('input-player-name');
       const email = screen.getByTestId('input-gravatar-email');
     
@@ -17,7 +17,7 @@ describe('Testando a Tela de Login', () => {
       
     });
     it('Testa se os Inputs estão funcionando', () => {
-        renderWithRouterAndRedux(<Login />);
+        renderWithRouterAndRedux(<App />);
       const name = screen.getByTestId('input-player-name');
       const email = screen.getByTestId('input-gravatar-email');
       userEvent.type(name, 'tryber')
@@ -49,8 +49,10 @@ describe('Testando a Tela de Login', () => {
         const btnPlay = screen.getByRole('button', { name: /play/i });
 
         userEvent.click(btnPlay);
-        
-        const { pathname } = history.location;
-        expect(pathname).toBe('/game');
+                
+        waitFor(() => {
+            const { pathname } = history.location;
+            expect(pathname).toBe('/game');
+        });
     });
 });

@@ -8,16 +8,14 @@ import { requestNextQuestion, requestCorrectAnswer } from '../redux/actions';
 class Game extends Component {
   state = {
     questions: '',
-    changeColor: false, // estado que muda a cor do botão
-    buttonNext: false,
+    answered: false, // estado que muda a cor do botão
     timer: 30,
     isDisabled: false,
-    randomAnswers: [],
     indexQuestion: 0,
   };
 
-  componentDidMount() {
-    this.getTriviaQuestions();
+  async componentDidMount() {
+    await this.getTriviaQuestions();
     this.timerQuestions();
   }
 
@@ -30,25 +28,32 @@ class Game extends Component {
       localStorage.removeItem('token');
       history.push('/');
     } else {
-      const answersList = [...results[0].incorrect_answers, results[0].correct_answer];
-      const randomAnswersLits = answersList.sort(() => 1 / 2 - Math.random());
-      this.setState({ questions: results, randomAnswers: randomAnswersLits });
+      const randomizedQuestions = results.map((question) => ({
+        ...question,
+        randomizedAnswers: [
+          ...question.incorrect_answers,
+          question.correct_answer,
+        ].sort(() => 1 / 2 - Math.random()),
+      }));
+
+      this.setState({ questions: randomizedQuestions });
     }
   };
 
   handleClickColor = (question) => { // função que muda o estado da cor do botão de acordo com a resposta
     const { dispatch } = this.props;
-    const { questions, timer } = this.state;
+    const { questions, indexQuestion, timer } = this.state;
+    const currentQuestion = questions[indexQuestion];
     const three = 3;
     const two = 2;
     const one = 1;
     clearInterval(this.timerInterval);
     if (question) {
       const difficulty = () => {
-        if (questions[0].difficulty === 'hard') {
+        if (currentQuestion.difficulty === 'hard') {
           return three;
         }
-        if (questions[0].difficulty === 'medium') {
+        if (currentQuestion.difficulty === 'medium') {
           return two;
         }
         return one;
@@ -56,28 +61,24 @@ class Game extends Component {
       dispatch(requestNextQuestion(timer, difficulty()));
       dispatch(requestCorrectAnswer());
     }
-    this.setState((prevState) => ({
-      changeColor: !prevState.changeColor, // altera o estado para true ou false, dependendo do estado anterior
-      buttonNext: true,
-    }));
+    this.setState({
+      answered: true,
+    });
   };
 
   // Função que leva para a próxima pergunta:
-  nextQuestion = () => {
+  nextQuestion = async () => {
     const { history } = this.props;
-    const { indexQuestion } = this.state;
-    const four = 4;
+    const { indexQuestion, questions } = this.state;
     this.setState({
       timer: 30,
+      answered: false,
     });
-    this.timerQuestions();
-    if (indexQuestion < four) {
+    if (indexQuestion < questions.length - 1) {
       this.setState({
         indexQuestion: indexQuestion + 1,
       });
-      this.getTriviaQuestions();
-    }
-    if (indexQuestion === four) {
+    } else {
       history.push('/feedback');
     }
   };
@@ -103,26 +104,43 @@ class Game extends Component {
   render() {
     const {
       questions,
-      changeColor,
-      buttonNext,
+      answered,
       isDisabled,
-      randomAnswers,
+      indexQuestion,
       timer } = this.state;
     if (!questions) return <p>Loading...</p>;
+
+    const currentQuestion = questions[indexQuestion];
+
+    // Função que substitui os caracteres especiais por seus respectivos caracteres:
+    const questionText = currentQuestion.question.replace(/&[^;]+;/g, (match) => {
+      switch (match) {
+      case '&quot;':
+        return '"';
+      case '&amp;':
+        return '&';
+      case '&#039;':
+      case '&apos;':
+        return '\'';
+      default:
+        return match;
+      }
+    });
+
     return (
       <div>
         <Header />
         <h1 data-testid="question-category">
-          { questions[0].category }
+          { currentQuestion.category }
         </h1>
         <h2 data-testid="question-text">
-          { questions[0].question }
+          {questionText}
         </h2>
         <div
           data-testid="answer-options"
         >
-          { randomAnswers.map((answers, index) => {
-            const isCorrectAnswer = answers === questions[0].correct_answer;
+          { currentQuestion.randomizedAnswers.map((answers, index) => {
+            const isCorrectAnswer = answers === currentQuestion.correct_answer;
             return (
               <button
                 key={ answers }
@@ -131,7 +149,7 @@ class Game extends Component {
                 data-testid={ isCorrectAnswer
                   ? 'correct-answer' : `wrong-answer-${index}` }
                 style={ // muda a cor do botão de acordo com a resposta
-                  changeColor // estado que muda a cor do botão
+                  answered // estado que muda a cor do botão
                     ? {
                       border: `3px solid ${
                         isCorrectAnswer ? 'rgb(6, 240, 15)' : 'red' // se a resposta for correta, a cor do botão será verde, se não, vermelho
@@ -147,7 +165,7 @@ class Game extends Component {
           }) }
         </div>
         {
-          buttonNext && (
+          answered && (
             <button
               data-testid="btn-next"
               onClick={ this.nextQuestion }
