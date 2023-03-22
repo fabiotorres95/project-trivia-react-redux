@@ -2,8 +2,8 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
-import { requestCorrectAnswer, requestNextQuestion } from '../redux/actions';
 import { getQuestions } from '../services/triviaAPI';
+import { requestNextQuestion, requestCorrectAnswer } from '../redux/actions';
 
 class Game extends Component {
   state = {
@@ -30,8 +30,7 @@ class Game extends Component {
       localStorage.removeItem('token');
       history.push('/');
     } else {
-      const answersList = [...results[0].incorrect_answers,
-        results[0].correct_answer];
+      const answersList = [...results[0].incorrect_answers, results[0].correct_answer];
       const randomAnswersLits = answersList.sort(() => 1 / 2 - Math.random());
       this.setState({ questions: results, randomAnswers: randomAnswersLits });
     }
@@ -39,17 +38,17 @@ class Game extends Component {
 
   handleClickColor = (question) => { // função que muda o estado da cor do botão de acordo com a resposta
     const { dispatch } = this.props;
-    const { questions, timer, indexQuestion } = this.state;
+    const { questions, timer } = this.state;
     const three = 3;
     const two = 2;
     const one = 1;
     clearInterval(this.timerInterval);
     if (question) {
       const difficulty = () => {
-        if (questions[indexQuestion].difficulty === 'hard') {
+        if (questions[0].difficulty === 'hard') {
           return three;
         }
-        if (questions[indexQuestion].difficulty === 'medium') {
+        if (questions[0].difficulty === 'medium') {
           return two;
         }
         return one;
@@ -66,19 +65,17 @@ class Game extends Component {
   // Função que leva para a próxima pergunta:
   nextQuestion = () => {
     const { history } = this.props;
-    const { indexQuestion, questions } = this.state;
+    const { indexQuestion } = this.state;
     const four = 4;
+    this.setState({
+      timer: 30,
+    });
     this.timerQuestions();
     if (indexQuestion < four) {
-      const answersList = [...questions[indexQuestion + 1].incorrect_answers,
-        questions[indexQuestion + 1].correct_answer];
-      const randomAnswersLits = answersList.sort(() => 1 / 2 - Math.random());
       this.setState({
         indexQuestion: indexQuestion + 1,
-        timer: 30,
-        randomAnswers: randomAnswersLits,
-        changeColor: false,
       });
+      this.getTriviaQuestions();
     }
     if (indexQuestion === four) {
       history.push('/feedback');
@@ -93,6 +90,7 @@ class Game extends Component {
         clearInterval(this.timerInterval);
         this.setState({
           isDisabled: true,
+          timer: -1,
         });
         return;
       }
@@ -109,23 +107,22 @@ class Game extends Component {
       buttonNext,
       isDisabled,
       randomAnswers,
-      indexQuestion,
       timer } = this.state;
     if (!questions) return <p>Loading...</p>;
     return (
       <div>
         <Header />
         <h1 data-testid="question-category">
-          { questions[indexQuestion].category }
+          { questions[0].category }
         </h1>
         <h2 data-testid="question-text">
-          { questions[indexQuestion].question }
+          { questions[0].question }
         </h2>
         <div
           data-testid="answer-options"
         >
           { randomAnswers.map((answers, index) => {
-            const isCorrectAnswer = answers === questions[indexQuestion].correct_answer;
+            const isCorrectAnswer = answers === questions[0].correct_answer;
             return (
               <button
                 key={ answers }

@@ -5,7 +5,7 @@ import Header from '../components/Header';
 
 class Feedback extends Component {
   render() {
-    const { assertions } = this.props;
+    const { assertions, score, history } = this.props;
     const MIN_LENGTH_ANSWERS = 3;
 
     return (
@@ -15,22 +15,52 @@ class Feedback extends Component {
         {
           assertions >= MIN_LENGTH_ANSWERS
             ? (
-              <p
-                data-testid="feedback-text"
-                className="feedbackTextWD"
-              >
-                Well Done!
-              </p>
+              <div>
+                <h3>Placar Final: </h3>
+                <h3 data-testid="feedback-total-score">{ score }</h3>
+                <p>Respostas Corretas: </p>
+                <p data-testid="feedback-total-question">{ assertions }</p>
+                <p
+                  data-testid="feedback-text"
+                  className="feedbackTextWD"
+                >
+                  Well Done!
+                </p>
+              </div>
             )
             : (
-              <p
-                data-testid="feedback-text"
-                className="feedbackTextCB"
-              >
-                Could be better...
-              </p>
+              <div>
+                <h3>Placar Final: </h3>
+                <h3 data-testid="feedback-total-score">{ score }</h3>
+                <p>Respostas Corretas: </p>
+                <p data-testid="feedback-total-question">{ assertions }</p>
+                <p
+                  data-testid="feedback-text"
+                  className="feedbackTextCB"
+                >
+                  Could be better...
+                </p>
+              </div>
             )
         }
+        <button
+          data-testid="btn-play-again"
+          onClick={ () => history.push('/') }
+        >
+          Play Again
+        </button>
+        <button
+          data-testid="btn-ranking"
+          onClick={ () => history.push('/ranking') }
+        >
+          Ranking
+        </button>
+        <button
+          data-testid="btn-go-home"
+          onClick={ () => history.push('/') }
+        >
+          Home
+        </button>
       </>
     );
   }
@@ -38,6 +68,10 @@ class Feedback extends Component {
 
 Feedback.propTypes = {
   assertions: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
+  history: PropTypes.shape({
+    push: PropTypes.func,
+  }).isRequired,
 };
 
 function mapStateToProps(state) {
