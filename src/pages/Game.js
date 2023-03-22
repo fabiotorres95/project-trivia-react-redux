@@ -79,7 +79,6 @@ class Game extends Component {
         randomAnswers: randomAnswersLits,
         changeColor: false,
       });
-      // this.getTriviaQuestions();
     }
     if (indexQuestion === four) {
       history.push('/feedback');

@@ -1,4 +1,4 @@
-import { USER_PLAYER, NEXT_QUESTION, CORRECT_ANSWER } from '../actions';
+import { CORRECT_ANSWER, NEXT_QUESTION, USER_PLAYER } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
