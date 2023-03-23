@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
 import { getQuestions } from '../services/triviaAPI';
+import '../styles/Game.css';
 import { requestNextQuestion, requestCorrectAnswer } from '../redux/actions';
 
 class Game extends Component {
@@ -78,6 +79,7 @@ class Game extends Component {
       this.setState({
         indexQuestion: indexQuestion + 1,
       });
+      this.timerQuestions();
     } else {
       history.push('/feedback');
     }
@@ -128,7 +130,7 @@ class Game extends Component {
     });
 
     return (
-      <div>
+      <div className="game">
         <Header />
         <h1 data-testid="question-category">
           { currentQuestion.category }
