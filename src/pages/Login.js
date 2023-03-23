@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { requestUserPlayer } from '../redux/actions';
 import getToken from '../services/triviaAPI';
+import '../styles/Login.css';
 
 class Login extends Component {
   state = {
@@ -37,11 +38,13 @@ class Login extends Component {
   render() {
     const { btnDisabled, name, email } = this.state;
     return (
-      <>
+      <div className="login">
+        <h1>Jogo de Trivia - Grupo 2</h1>
         <input
           data-testid="input-player-name"
           type="text"
           name="name"
+          placeholder="Digite aqui seu nome"
           onChange={ this.handleChange }
           value={ name }
         />
@@ -49,6 +52,7 @@ class Login extends Component {
           data-testid="input-gravatar-email"
           type="email"
           name="email"
+          placeholder="Digite aqui o seu email"
           onChange={ this.handleChange }
           value={ email }
         />
@@ -66,7 +70,7 @@ class Login extends Component {
         >
           Configurações
         </button>
-      </>
+      </div>
     );
   }
 }

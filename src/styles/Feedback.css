@@ -1,0 +1,19 @@
+.feedback {
+  background-image: url('background.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  font-family: 'Helvetica Neue', sans-serif;
+  text-align: center;
+  height: 100vh;
+  font-size: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.feedback button {
+  margin: 0.5rem;
+}
+

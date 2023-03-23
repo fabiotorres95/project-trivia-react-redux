@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import '../styles/Feedback.css';
 import Header from '../components/Header';
 import { requestPlayAgain } from '../redux/actions';
 
@@ -16,7 +17,7 @@ class Feedback extends Component {
     const MIN_LENGTH_ANSWERS = 3;
 
     return (
-      <>
+      <div className="feedback">
         <h1 data-testid="feedback-text"> Pag de Feedback </h1>
         <Header />
         <div>
@@ -60,7 +61,7 @@ class Feedback extends Component {
         >
           Home
         </button>
-      </>
+      </div>
     );
   }
 }
