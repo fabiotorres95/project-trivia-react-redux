@@ -8,3 +8,8 @@ Não deixe de usar nossas dicas de escrita de README de projetos, e deixe sua cr
 - quais arquivos/pastas foram desenvolvidos por outra pessoa estudante;
 - quais arquivos/pastas foram desenvolvidos pela Trybe.
 -->
+Projeto Trivia React Redux - Trybe curso Front-End seção 8: "Projeto com React Redux"
+
+Front-End - projeto 8 de 10
+
+coautores: Wilson Maximo, Juliana Ando de Cezare, Aline Resende, Lucas Moura.
